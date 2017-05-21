@@ -23,9 +23,19 @@ public class Done_DestroyByContact : MonoBehaviour
 
 	void OnTriggerEnter (Collider other)
 	{
-		if (other.tag == "Boundary" || other.tag == "Enemy")
+		
+		if (other.tag == "Boundary" || other.tag == "Enemy" || other.tag == "EnemyShip")
 		{
 			return;
+		}
+
+		if(other.tag == "weapons" && gameObject.tag == "EnemyShip") // tag for player weapon
+		{
+			var player = GameObject.FindGameObjectWithTag ("Player");
+
+			if(player != null)
+				player.GetComponent<Done_PlayerController> ().ChargeWeapon();
+
 		}
 
 		if (explosion != null)
@@ -41,6 +51,16 @@ public class Done_DestroyByContact : MonoBehaviour
 		
 		gameController.AddScore(scoreValue);
 		Destroy (other.gameObject);
+		Destroy (gameObject);
+	}
+
+	public void Destruction(){
+
+		if (explosion != null)
+		{
+			Instantiate(explosion, transform.position, transform.rotation);
+		}
+		gameController.AddScore(scoreValue);
 		Destroy (gameObject);
 	}
 }
