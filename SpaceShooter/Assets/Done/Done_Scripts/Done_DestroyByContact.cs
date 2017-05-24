@@ -31,14 +31,28 @@ public class Done_DestroyByContact : MonoBehaviour
 
 		if(other.tag == "weapons" && gameObject.tag == "EnemyShip") // tag for player weapon
 		{
-			var player = GameObject.FindGameObjectWithTag ("Player");
+            Debug.Log("collison that will charge");
 
-			if(player != null)
-				player.GetComponent<Done_PlayerController> ().ChargeWeapon();
+            var player = GameObject.FindGameObjectWithTag ("Player");
 
-		}
+            if (player != null)
+            {
+                Debug.Log("player not null");
+                var t = player.GetComponent<Done_PlayerController>();
+                if(t != null)
+                {
+                    Debug.Log("script not null");
+                    t.ChargeWeapon();
+                }
+                //player.GetComponent<Done_PlayerController>().ChargeWeapon();
+            }
+            else
+                Debug.Log("player null");
 
-		if (explosion != null)
+
+        }
+
+        if (explosion != null)
 		{
 			Instantiate(explosion, transform.position, transform.rotation);
 		}

@@ -25,17 +25,18 @@ public class Done_PlayerController : MonoBehaviour
 	private int weaponCharge = 0;
 	private bool weaponNotReset = true;
 
-	//-----------progressbarImages--------------------
-	public GameObject firstCharge;
+    //-----------progressbarImages--------------------
+    public GameObject firstCharge;
 	public GameObject secondCharge;
 	public GameObject thirdCharge;
 	public GameObject fourthCharge;
 	public GameObject fifthCharge;
 	public GameObject weaponReadyText;
 	public GameObject progBarContour;
-	//-----------progressbarImages--------------------
+    public GameObject fireSecondaryWeaponButton;
+    //-----------progressbarImages--------------------
 
-	private Quaternion calibrationQuaternion;
+    private Quaternion calibrationQuaternion;
 
 	public void Start(){
 		CalibrateAccelerometer();
@@ -69,7 +70,7 @@ public class Done_PlayerController : MonoBehaviour
 				}
 			}
 				
-			resetWeapon ();
+			resetWeapon();
 		}
 		else if (!Toolbox.Instance.controllerMod && firingTouchPad.canFire () && Time.time > nextFire) {
 			nextFire = Time.time + fireRate;
@@ -122,59 +123,102 @@ public class Done_PlayerController : MonoBehaviour
 	public void InitializeWeapon()
 	{
 		weaponCharge = 0;
-		var prog = Instantiate (progBarContour);
-		prog.transform.SetParent (GameObject.Find ("Canvas").transform, false);
-	}
+        var prog = Instantiate(progBarContour);
+		prog.transform.SetParent(GameObject.Find("Canvas").transform, false);
+    }
 
 	public void resetWeapon()
 	{
+        Debug.Log("reset weapon");
 		weaponCharge = 0;
-		var progBar = GameObject.FindGameObjectsWithTag ("progressBar");
+        var progBar = GameObject.FindGameObjectsWithTag ("progressBar");
 
 		if (progBar.Length > 0) {
 			foreach (var item in progBar) {
 				if (item.name != "ProgressBarContour(Clone)")
-					Destroy (item);
+					Destroy(item);
 			}
 		}
-	}
+
+        var weaponButton = GameObject.FindGameObjectWithTag("FireSecondaryWeaponButton");
+
+        if (weaponButton != null)
+            Destroy(weaponButton);
+
+        Debug.Log(weaponCharge.ToString());
+    }
 
 	public void ChargeWeapon()
 	{
-		if (weaponCharge == 5)
+        Debug.Log("charge weapon : " + weaponCharge);
+
+        if (weaponCharge == 5)
 			return;
 		
 		++weaponCharge;
-
-		GameObject bar;
+        
+        GameObject bar;
 
 		switch (weaponCharge) {
 		case 1:
 			bar = Instantiate (firstCharge);
-			bar.transform.SetParent (GameObject.Find ("Canvas").transform, false);
+			bar.transform.SetParent (GameObject.Find("Canvas").transform, false);
 			break;
 		case 2:
 			bar = Instantiate (secondCharge);
-			bar.transform.SetParent (GameObject.Find ("Canvas").transform, false);
+			bar.transform.SetParent (GameObject.Find("Canvas").transform, false);
 			break;
 		case 3:
 			bar = Instantiate (thirdCharge);
-			bar.transform.SetParent (GameObject.Find ("Canvas").transform, false);
+			bar.transform.SetParent (GameObject.Find("Canvas").transform, false);
 			break;
 		case 4:
 			bar = Instantiate (fourthCharge);
-			bar.transform.SetParent (GameObject.Find ("Canvas").transform, false);
+			bar.transform.SetParent (GameObject.Find("Canvas").transform, false);
 			break;
 		case 5:
 			bar = Instantiate (fifthCharge);
-			bar.transform.SetParent (GameObject.Find ("Canvas").transform, false);
+			bar.transform.SetParent (GameObject.Find("Canvas").transform, false);
 			bar = Instantiate (weaponReadyText);
-			bar.transform.SetParent (GameObject.Find ("Canvas").transform, false);
-			break;
+			bar.transform.SetParent (GameObject.Find("Canvas").transform, false);
+            
+            bar = Instantiate(fireSecondaryWeaponButton);
+            bar.transform.SetParent(GameObject.Find("Canvas").transform, false);
+            break;
 		}
 	}
 
-	void OnDestroy() {
+    public void FireSecondaryWeapon()
+    {
+        var allEnemy = GameObject.FindGameObjectsWithTag("Enemy");
+
+        if (allEnemy.Length > 0)
+        {
+            foreach (var enemy in allEnemy)
+            {
+                var script = enemy.GetComponent<Done_DestroyByContact>();
+                if (script != null)
+                    script.Destruction();
+            }
+        }
+
+        allEnemy = GameObject.FindGameObjectsWithTag("EnemyShip");
+
+        if (allEnemy.Length > 0)
+        {
+            foreach (var enemy in allEnemy)
+            {
+                var script = enemy.GetComponent<Done_DestroyByContact>();
+                if (script != null)
+                    script.Destruction();
+            }
+        }
+
+        var playerShip = GameObject.FindGameObjectWithTag("Player").GetComponent<Done_PlayerController>();
+        playerShip.resetWeapon();
+    }
+
+    void OnDestroy() {
 		var progBar = GameObject.FindGameObjectsWithTag ("progressBar");
 
 		if (progBar.Length > 0) {

@@ -60,15 +60,16 @@ public class Done_GameController : MonoBehaviour
 	public GameObject restartButton;
 	public GameObject ReturnMenuButton;
 
-	//------------MainMenuObjects---------------
-	public GameObject mainMenuBackGround;
+    //------------MainMenuObjects---------------
+    public GameObject mainMenuBackGround;
 	public GameObject mainMenuGameNameText;
 	public GameObject mainMenuStartButton;
 	public GameObject mainMenuSettingsButton;
 	public GameObject playerShip;
-	//------------MainMenuObjects---------------
+    //------------MainMenuObjects---------------
 
-	//------------SettingsObjects---------------
+    //------------SettingsObjects---------------
+    public GameObject settingsText;
 	public GameObject toggleControlButton;
 	public GameObject accelerometerText;
 	public GameObject accelerometerInputField;
@@ -78,14 +79,13 @@ public class Done_GameController : MonoBehaviour
 	//------------SettingsObjects---------------
 	
 	private bool gameOver;
-	private bool restart;
 	private int score;
 	private EnemyInfo enemyInfo;
 	
 	public void Start ()
 	{
 		restartButton.SetActive (false);
-		ReturnMenuButton.SetActive (false);
+        ReturnMenuButton.SetActive (false);
 		toggleMainMenu (true);
 		toggleSettingsMenu (false);
 		Toolbox.Instance.inGame = false;
@@ -109,10 +109,9 @@ public class Done_GameController : MonoBehaviour
 		}
 
 		restartButton.SetActive (false);
-		ReturnMenuButton.SetActive (false);
+        ReturnMenuButton.SetActive (false);
 		gameOverText.text = "";
 		gameOver = false;
-		restart = false;
 		score = 0;
 		UpdateScore ();
 		StartCoroutine (SpawnWaves ());
@@ -128,10 +127,11 @@ public class Done_GameController : MonoBehaviour
 
 	void toggleSettingsMenu(bool show)
 	{
-		toggleControlButton.SetActive (show);
-		accelerometerText.SetActive (show);
-		accelerometerInputField.SetActive (show);
-		returnToMainMenuButton.SetActive (show);
+        settingsText.SetActive(show);
+		toggleControlButton.SetActive(show);
+		accelerometerText.SetActive(show);
+		accelerometerInputField.SetActive(show);
+		returnToMainMenuButton.SetActive(show);
 		difficultyDropDown.SetActive(show);
 		difficultyText.SetActive(show);
 	}
@@ -185,9 +185,6 @@ public class Done_GameController : MonoBehaviour
 	{
 		gameOverText.text = "Game Over!";
 		gameOver = true;
-		/*foreach (var item in GameObject.FindGameObjectsWithTag ("progressBar")) {
-			Destroy (item);
-		}*/
 	}
 
 	public void restartGame(){
