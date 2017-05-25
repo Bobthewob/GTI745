@@ -86,7 +86,9 @@ public class Done_GameController : MonoBehaviour
 	{
 		restartButton.SetActive (false);
         ReturnMenuButton.SetActive (false);
-		toggleMainMenu (true);
+        gameOverText.text = "";
+        scoreText.text = "";
+        toggleMainMenu (true);
 		toggleSettingsMenu (false);
 		Toolbox.Instance.inGame = false;
 	}
@@ -185,7 +187,12 @@ public class Done_GameController : MonoBehaviour
 	{
 		gameOverText.text = "Game Over!";
 		gameOver = true;
-	}
+
+        var weaponButton = GameObject.FindGameObjectWithTag("FireSecondaryWeaponButton");
+
+        if (weaponButton != null)
+            Destroy(weaponButton);
+    }
 
 	public void restartGame(){
 		Toolbox.Instance.inGame = false;
