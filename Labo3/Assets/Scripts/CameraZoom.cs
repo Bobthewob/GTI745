@@ -11,11 +11,15 @@ public class CameraZoom : MonoBehaviour
     private Vector3 holdMousePosition;
     private Vector3 initialMousePosition;
     private bool translateFirstTime = true;
-
     private bool rotateFirstTime = true;
 
     private bool isZoomed = false;
     private Vector3 targetPosition;
+    private Vector3 pointFirstCollider = Vector3.zero;
+    private bool rotateAroundObject = false;
+    public GameObject firstCubeMerge = null;
+    public GameObject secondCubeMerge = null;
+    public GameObject cubeSelection = null;
 
     // Use this for initialization
     void Start()
@@ -26,138 +30,244 @@ public class CameraZoom : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var direction = GetComponent<Camera>().transform.forward;
-        var cameraTransform = GetComponent<Transform>();
-        var camera = GetComponent<Camera>();
+        var menuRectangle = GameObject.Find("Panel").GetComponent<RectTransform>().rect;
 
-        // Scroll Up
-        if (Input.GetAxis("Mouse ScrollWheel") > 0) {
-            zoomIn(cameraTransform, direction);
-        }
+        if (!menuRectangle.Contains(Input.mousePosition))
+        { //if we have the cursor over the menu we do not want to move the camera in any way
 
-        // Scroll down
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0) {
-            zoomOut(cameraTransform, direction);
-        }
+            var direction = GetComponent<Camera>().transform.forward;
+            var cameraTransform = GetComponent<Transform>();
+            var camera = GetComponent<Camera>();
 
-        // Right click
-        if (Input.GetMouseButtonDown(1))
-        {
-            Debug.Log("Pressed right click down.");
-            rotateFirstTime = false;
-            initialMousePosition = Input.mousePosition;
-        }
-
-        if (Input.GetMouseButtonUp(1))
-        {
-            Debug.Log("Pressed right click up.");
-            rotateFirstTime = true;
-        }
-
-        if (Input.GetMouseButton(1))
-        {
-            Debug.Log("Pressed right click hold.");
-            if (!rotateFirstTime)
+            switch (Manager.Instance.cursorType)
             {
-                holdMousePosition = Input.mousePosition;
+                case cursorType.FreeView:
 
-                float grandeur = (initialMousePosition - holdMousePosition).magnitude * speed;
+                    // Scroll Up
+                    if (Input.GetAxis("Mouse ScrollWheel") > 0)
+                    {
+                        zoomIn(cameraTransform, direction);
+                    }
 
-                var hold3DMousePosition = camera.ViewportToWorldPoint(
-                    new Vector3(
-                        holdMousePosition.x,
-                        holdMousePosition.y,
-                        camera.nearClipPlane
-                    )
-                );
+                    // Scroll down
+                    else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+                    {
+                        zoomOut(cameraTransform, direction);
+                    }
 
-                var initial3DMousePosition = camera.ViewportToWorldPoint(
-                    new Vector3(
-                        initialMousePosition.x,
-                        initialMousePosition.y,
-                        camera.nearClipPlane
-                    )
-                );
+                    // Right click
+                    if (Input.GetMouseButtonDown(1))
+                    {
+                        Debug.Log("Pressed right click down.");
+                        rotateFirstTime = false;
+                        initialMousePosition = Input.mousePosition;
 
-                cameraTransform.RotateAround(Vector3.zero, (hold3DMousePosition - initial3DMousePosition), 1);
+                        var ray = camera.ScreenPointToRay(initialMousePosition);
+                        RaycastHit hitInfo;
+                        Physics.Raycast(ray, out hitInfo);
+                        pointFirstCollider = hitInfo.point;
 
-                /*var hold3DMousePosition = camera.ViewportToWorldPoint(
-                    new Vector3(
-                        holdMousePosition.x,
-                        holdMousePosition.y,
-                        camera.nearClipPlane
-                    )
-                );
-                var initial3DMousePosition = camera.ViewportToWorldPoint(
-                    new Vector3(
-                        initialMousePosition.x,
-                        initialMousePosition.y,
-                        camera.nearClipPlane
-                    )
-                );
+                        if (pointFirstCollider == Vector3.zero)
+                            rotateAroundObject = false;
+                        else
+                            rotateAroundObject = true;
+                    }
 
-                var directionMouse = initial3DMousePosition - hold3DMousePosition;
-                directionMouse.Normalize();
+                    if (Input.GetMouseButtonUp(1))
+                    {
+                        Debug.Log("Pressed right click up.");
+                        rotateFirstTime = true;
+                        rotateAroundObject = false;
 
-                Vector3 rotationVector = Vector3.Cross(directionMouse, direction);
+                    }
 
-                var positionAfterRotation = Quaternion.AngleAxis(1f, rotationVector);
+                    if (Input.GetMouseButton(1))
+                    {
+                        Debug.Log("Pressed right click hold.");
+                        if (!rotateFirstTime)
+                        {
+                            holdMousePosition = Input.mousePosition;
 
-                GetComponent<Transform>().rotation = Quaternion.Inverse(positionAfterRotation) * GetComponent<Transform>().rotation;*/
+                            float grandeur = (initialMousePosition - holdMousePosition).magnitude * speed;
 
-                //GetComponent<Transform>().position = Quaternion. * GetComponent<Transform>().rotation;
+                            var hold3DMousePosition = camera.ViewportToWorldPoint(
+                                new Vector3(
+                                    holdMousePosition.x,
+                                    holdMousePosition.y,
+                                    camera.nearClipPlane
+                                )
+                            );
+
+                            var initial3DMousePosition = camera.ViewportToWorldPoint(
+                                new Vector3(
+                                    initialMousePosition.x,
+                                    initialMousePosition.y,
+                                    camera.nearClipPlane
+                                )
+                            );
+
+                            var mouseDirectionVector = (hold3DMousePosition - initial3DMousePosition);
+                            mouseDirectionVector.Normalize();
+                            var rotationVector = Vector3.Cross(mouseDirectionVector, camera.transform.forward);
+
+                            //nous tournons autour d'un object (l'object a /t/ trouver au premier click de la souris avecc un raycasting du curseur);
+                            if (rotateAroundObject)
+                            {
+                                cameraTransform.RotateAround(pointFirstCollider, rotationVector, 0.5f * grandeur);
+                            }
+                            else //nous tournons autour de rien
+                            {
+                                cameraTransform.RotateAround(camera.transform.position + (camera.transform.forward * 10), rotationVector, 0.5f * grandeur);
+                            }
+                        }
+                    }
+
+                    // Middle click
+                    if (Input.GetMouseButton(2))
+                    {
+                        Debug.Log("Pressed middle click. test");
+                        if (translateFirstTime)
+                        {
+                            translateFirstTime = false;
+                            initialMousePosition = Input.mousePosition;
+                        }
+                        else
+                        {
+                            Debug.Log("Pressed middle click.");
+                            holdMousePosition = Input.mousePosition;
+
+                            float grandeur = (initialMousePosition - holdMousePosition).magnitude * speed;
+
+                            // translation
+                            var hold3DMousePosition = GetComponent<Camera>().ViewportToWorldPoint(
+                                new Vector3(
+                                    holdMousePosition.x,
+                                    holdMousePosition.y,
+                                    GetComponent<Camera>().nearClipPlane
+                                )
+                            );
+                            var initial3DMousePosition = GetComponent<Camera>().ViewportToWorldPoint(
+                                new Vector3(
+                                    initialMousePosition.x,
+                                    initialMousePosition.y,
+                                    GetComponent<Camera>().nearClipPlane
+                                )
+                            );
+
+                            var directionMouse = initial3DMousePosition - hold3DMousePosition;
+                            directionMouse.Normalize();
+
+                            GetComponent<Transform>().position = new Vector3(
+                                transform.position.x + directionMouse.x * grandeur,
+                                transform.position.y + directionMouse.y * grandeur,
+                                transform.position.z + directionMouse.z * grandeur
+                            );
+
+                            initialMousePosition = Input.mousePosition;
+                        }
+                    }
+                    else
+                    {
+                        translateFirstTime = true;
+                    }
+
+                    if (Input.GetMouseButtonUp(0)) //left click up
+                    {
+                        var ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+                        RaycastHit hitInfo;
+                        Physics.Raycast(ray, out hitInfo);
+                        if (hitInfo.collider != null)
+                        {
+                            if (cubeSelection != null)
+                            {
+                                cubeSelection.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
+                            }
+                            cubeSelection = hitInfo.collider.gameObject;
+
+                            cubeSelection.GetComponent<MeshRenderer>().material.color = new Color(1, 0, 0);
+                        }
+                        else {
+                            if(cubeSelection != null)
+                                cubeSelection.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
+                        }
+                    }
+                    break;
+                case cursorType.CreateCube:
+                    if (Input.GetMouseButtonUp(0)) //left click up
+                    {
+                        var newCube = (GameObject)Instantiate(Resources.Load("Cube"));
+
+                        var ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+
+                        newCube.transform.position = ray.origin + (ray.direction * 15);
+                    }
+                    break;
+                case cursorType.MergeCube:
+                    //left click
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        var ray = camera.ScreenPointToRay(Input.mousePosition);
+                        RaycastHit hitInfo;
+                        Physics.Raycast(ray, out hitInfo);
+                        if (hitInfo.collider != null)
+                        {
+                            var selectedCube = hitInfo.collider.gameObject;
+                            firstCubeMerge = selectedCube;
+                            selectedCube.GetComponent<MeshRenderer>().material.color = new Color(0, 0, 0);
+                        }
+
+                    }
+                    else if (Input.GetMouseButtonUp(0))
+                    {
+                        if (firstCubeMerge != null && secondCubeMerge != null)
+                        {
+                            firstCubeMerge.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
+                            firstCubeMerge.transform.localScale += new Vector3(1, 1, 1);
+                            Destroy(secondCubeMerge);
+                        }
+                    }
+
+                    if (Input.GetMouseButton(0))
+                    {
+                        if (firstCubeMerge != null)
+                        {
+                            var ray = camera.ScreenPointToRay(Input.mousePosition);
+                            RaycastHit hitInfo;
+                            Physics.Raycast(ray, out hitInfo);
+                            if (hitInfo.collider != null)
+                            {
+                                var selectedCube = hitInfo.collider.gameObject;
+                                if (selectedCube != firstCubeMerge)
+                                {
+                                    if (secondCubeMerge != null)
+                                    {
+                                        if (selectedCube != secondCubeMerge)
+                                            secondCubeMerge.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
+                                    }
+
+                                    secondCubeMerge = selectedCube;
+                                    selectedCube.GetComponent<MeshRenderer>().material.color = new Color(0, 0, 0);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (firstCubeMerge != null)
+                        {
+                            firstCubeMerge.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
+                            firstCubeMerge = null;
+                        }
+
+                        if (secondCubeMerge != null)
+                        {
+                            secondCubeMerge.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
+                            secondCubeMerge = null;
+                        }
+                    }
+                    break;
             }
         }
-
-        // Middle click
-        if (Input.GetMouseButton(2))
-        {
-            Debug.Log("Pressed middle click. test");
-            if (translateFirstTime)
-            {
-                translateFirstTime = false;
-                initialMousePosition = Input.mousePosition;
-            }
-            else
-            {
-                Debug.Log("Pressed middle click.");
-                holdMousePosition = Input.mousePosition;
-
-                float grandeur = (initialMousePosition - holdMousePosition).magnitude * speed;
-
-                // translation
-                var hold3DMousePosition = GetComponent<Camera>().ViewportToWorldPoint(
-                    new Vector3(
-                        holdMousePosition.x,
-                        holdMousePosition.y,
-                        GetComponent<Camera>().nearClipPlane
-                    )
-                );
-                var initial3DMousePosition = GetComponent<Camera>().ViewportToWorldPoint(
-                    new Vector3(
-                        initialMousePosition.x,
-                        initialMousePosition.y,
-                        GetComponent<Camera>().nearClipPlane
-                    )
-                );
-
-                var directionMouse = initial3DMousePosition - hold3DMousePosition;
-                directionMouse.Normalize();
-
-                GetComponent<Transform>().position = new Vector3(
-                    transform.position.x + directionMouse.x * grandeur,
-                    transform.position.y + directionMouse.y * grandeur,
-                    transform.position.z + directionMouse.z * grandeur
-                );
-
-                initialMousePosition = Input.mousePosition;
-            }
-        }
-        else
-        {
-            translateFirstTime = true;
-        }
-
     }
 
     private void zoomIn(Transform cameraTransform, Vector3 direction)
