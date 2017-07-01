@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// Be aware this will not prevent a non singleton constructor
@@ -90,5 +92,49 @@ public class Manager : Singleton<Manager>
     protected Manager() { } // guarantee this will be always a singleton only - can't use the constructor!
 
     public cursorType cursorType = cursorType.FreeView;
+    public List<CubeParent> rootCubes = new List<CubeParent>();   
+    public CubeParent selectedCube;                       //currently selected cube
+    public int cubeUID = 0;
+
+    public string getUniqueCubeName() {
+        return "Cube #" + ++cubeUID;
+    }
+}
+
+public class Cube
+{
+
+}
+
+public class CubeParent : Cube, IEnumerable<CubeChildren> {
+    public List<CubeChildren> children;
+    public string name;
+
+    public CubeParent(string name) {
+        children = new List<CubeChildren>();
+        this.name = name;
+        children.Add(new CubeChildren(name));
+    }
+
+    public IEnumerator<CubeChildren> GetEnumerator()
+    {
+        return children.GetEnumerator();
+    }
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return this.GetEnumerator();
+    }
+}
+
+public class CubeChildren : Cube {
+    public byte[] partition;
+    public string name;
+
+    public CubeChildren(string name)
+    {
+        partition = new byte[50];
+        this.name = name;
+    }
 }
 

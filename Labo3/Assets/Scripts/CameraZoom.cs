@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System.Linq;
 
 public class CameraZoom : MonoBehaviour
 {
 
     public float speedZoom = 1f;
     public float speed = 0.01f;
+    public InputField cubeNameInput;
 
     private Vector3 holdMousePosition;
     private Vector3 initialMousePosition;
@@ -17,9 +20,9 @@ public class CameraZoom : MonoBehaviour
     private Vector3 targetPosition;
     private Vector3 pointFirstCollider = Vector3.zero;
     private bool rotateAroundObject = false;
-    public GameObject firstCubeMerge = null;
-    public GameObject secondCubeMerge = null;
-    public GameObject cubeSelection = null;
+    private GameObject firstCubeMerge = null;
+    private GameObject secondCubeMerge = null;
+    private GameObject cubeSelection = null;
 
     // Use this for initialization
     void Start()
@@ -183,12 +186,16 @@ public class CameraZoom : MonoBehaviour
                                 cubeSelection.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
                             }
                             cubeSelection = hitInfo.collider.gameObject;
+                            Manager.Instance.selectedCube = cubeSelection.GetComponent<cubeScript>().cube;
+                            cubeNameInput.text = Manager.Instance.selectedCube.name;
 
                             cubeSelection.GetComponent<MeshRenderer>().material.color = new Color(1, 0, 0);
                         }
                         else {
-                            if(cubeSelection != null)
+                            if (cubeSelection != null) {
+                                Manager.Instance.selectedCube = null;
                                 cubeSelection.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
+                            }
                         }
                     }
                     break;
@@ -223,7 +230,16 @@ public class CameraZoom : MonoBehaviour
                         {
                             firstCubeMerge.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
                             firstCubeMerge.transform.localScale += new Vector3(1, 1, 1);
+                            cubeScript c1Info = firstCubeMerge.GetComponent<cubeScript>();
+                            cubeScript c2Info = secondCubeMerge.GetComponent<cubeScript>();
+
+                            foreach (var partition in c2Info.cube)
+                            {
+                                c1Info.cube.children.Add(partition);
+                            }
+                            
                             Destroy(secondCubeMerge);
+                            Manager.Instance.rootCubes.Remove(c2Info.cube);
                         }
                     }
 
