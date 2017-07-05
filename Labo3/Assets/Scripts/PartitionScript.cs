@@ -22,31 +22,63 @@ public class PartitionScript : MonoBehaviour {
         partition1.position = GameObject.Find("Partition1").GetComponent<RectTransform>().position;
 
         var nbLine = 21;
-        var step = -20;
-        string[] notes = { "Si - B", "La - A", "Sol - G", "Fa - F", "Mi - E", "Ré - D", "Do - C" };
+        var stepY = 10;
+		var nbcolumn = 40;
+		var stepX = 37.5f;
 
-        Debug.Log("mouse : " + position.ToString());
+		string[] notes = {"Do - C", "Ré - D", "Mi - E", "Fa - F", "Sol - G", "La - A", "Si - B" };
+
+        
         if (partition.Contains(Input.mousePosition) || partition1.Contains(Input.mousePosition))
         {
             Tooltip.SetActive(true);
-            Debug.Log("TESTESTEST");
-            Debug.Log(partition.position.ToString());
+			int magnetYPosition = 0;
+
             for (int i = 0; i < nbLine; i++)
             {
-                if (between(position, (int)partition.position.y + i*step, (int)partition.position.y + (i+1)*step))
+                if (betweenY(position, (int)partition.position.y + i*stepY + 5, (int)partition.position.y + (i+1)*stepY + 5) ||
+					betweenY(position, (int)partition1.position.y + i*stepY + 5, (int)partition1.position.y + (i+1)*stepY + 5))
                 {
-                    Tooltip.GetComponent<Text>().text = notes[i%7];
+					Tooltip.GetComponentInChildren<Text>().text = notes[i % 7];
                     Tooltip.GetComponent<Transform>().position = new Vector3(position.x + 50, position.y + 50, 0);
+
+					if (betweenY (position, (int)partition.position.y + i * stepY + 5, (int)partition.position.y + (i + 1) * stepY + 5)) {
+						magnetYPosition = (int)partition.position.y + i * stepY - 1;
+						break;
+					} else if (betweenY (position, (int)partition1.position.y + i * stepY + 5, (int)partition1.position.y + (i + 1) * stepY + 5)) {
+						magnetYPosition = (int)partition1.position.y + i * stepY - 1;
+						break;
+					}
                 }
             }
-        }
+			//Debug.Log("1::: mouse y pos : " + position.ToString() + " y1: " + (int)partition.position.y + " y2: "+ (int)partition.position.y + (21 * step));
+			//Debug.Log("2::: mouse y pos : " + position.ToString() + " y1: " + (int)partition1.position.y + " y2: "+ (int)partition1.position.y + (21 * step));
+        	
+			if (Input.GetMouseButtonDown (0)) {
+				for (int i = 0; i < nbcolumn; i++) {
+					if (betweenX (position, (int)partition.position.x + i * stepX + 18.75f, (int)partition.position.x + (i + 1) * stepX + 18.75f) ||
+					    betweenX (position, (int)partition1.position.x + i * stepX + 18.75f, (int)partition1.position.x + (i + 1) * stepX + 18.75f)) {
+						var newNote = (GameObject)Instantiate(Resources.Load("Note"));
+
+						newNote.transform.position = new Vector3 ((int)partition1.position.x + i * stepX + 18.75f, magnetYPosition, 0);
+						newNote.transform.SetParent (GameObject.Find ("Canvas").transform, false);
+						newNote.transform.SetAsLastSibling ();
+					}
+				}
+			}
+		}
         else {
             Tooltip.SetActive(false);
         }
 	}
 
-    bool between (Vector3 position, int y1, int y2)
+    bool betweenY (Vector3 position, int y1, int y2)
     {
         return (position.y > y1) && (position.y < y2);
     }
+
+	bool betweenX (Vector3 position, float x1, float x2)
+	{
+		return (position.x > x1) && (position.x < x2);
+	}
 }
