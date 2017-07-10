@@ -36,6 +36,7 @@ public class UIEvent : MonoBehaviour {
 			button.image.color = new Color(1f, 1f, 1f);
 		}
 		else {
+            Debug.Log("PlayMode");
 			Manager.Instance.cursorType = cursorType.Play;
 			button.image.color = new Color(0.65f, 0.65f, 0.65f);
 		}

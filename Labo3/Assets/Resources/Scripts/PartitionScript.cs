@@ -73,12 +73,6 @@ public class PartitionScript : MonoBehaviour {
 									GameObject.Destroy (oldNote);
 								}
 
-								var newNote = (GameObject)Instantiate (Resources.Load ("NoteSpriteObject"));
-								newNote.transform.position = new Vector3 ((int)partition.position.x + (i * stepX) + 18.75f, magnetYPosition, 0);
-								newNote.transform.SetParent (GameObject.Find ("Canvas2DPartition").transform, false);
-								newNote.transform.SetAsLastSibling ();	
-								newNote.name = "Note_" + i + "_" + partitionIn;
-
 								int indexNote = 0;
 
 								indexNote = (int)((magnetYPosition - 654) / stepY);
@@ -106,14 +100,29 @@ public class PartitionScript : MonoBehaviour {
 								canHalfTone = false;
 
 								indexNote -= offset;
-								
-								if (demiTone) { //tabarnak de criss de marde pk les input sont pas detect
-									if (canHalfTone) {
-										Debug.Log ("DemiTone");
-										++indexNote;
-										newNote.GetComponent<Image> ().color = new Color (0, 0, 0); //black
-									}
-								}
+
+
+
+                                if (demiTone && canHalfTone)
+                                { //tabarnak de criss de marde pk les input sont pas detect
+
+                                    Debug.Log("DemiTone");
+                                    ++indexNote;
+
+                                    var newNote = (GameObject)Instantiate(Resources.Load("noteSpriteDemiToneObject"));
+                                    newNote.transform.position = new Vector3((int)partition.position.x + (i * stepX) + 18.75f, magnetYPosition, 0);
+                                    newNote.transform.SetParent(GameObject.Find("Canvas2DPartition").transform, false);
+                                    newNote.transform.SetAsLastSibling();
+                                    newNote.name = "Note_" + i + "_" + partitionIn;
+
+                                }
+                                else {
+                                    var newNote = (GameObject)Instantiate(Resources.Load("NoteSpriteObject"));
+                                    newNote.transform.position = new Vector3((int)partition.position.x + (i * stepX) + 18.75f, magnetYPosition, 0);
+                                    newNote.transform.SetParent(GameObject.Find("Canvas2DPartition").transform, false);
+                                    newNote.transform.SetAsLastSibling();
+                                    newNote.name = "Note_" + i + "_" + partitionIn;
+                                }
 
 								//Debug.Log(indexNote);
 
@@ -131,12 +140,6 @@ public class PartitionScript : MonoBehaviour {
 								if (oldNote != null) {
 									GameObject.Destroy (oldNote);
 								}
-
-								var newNote = (GameObject)Instantiate (Resources.Load ("NoteSpriteObject"));
-								newNote.transform.position = new Vector3 ((int)partition.position.x + ((i - nbcolumn) * stepX) + 18.75f, magnetYPosition, 0);
-								newNote.transform.SetParent (GameObject.Find ("Canvas2DPartition").transform, false);
-								newNote.transform.SetAsLastSibling ();	
-								newNote.name = "Note_" + (i - nbcolumn) + "_" + partitionIn;
 
 								int indexNote = 0;
 
@@ -166,17 +169,31 @@ public class PartitionScript : MonoBehaviour {
 
 								indexNote -= offset;
 
-								if (demiTone) { //tabarnak de criss de marde pk les input sont pas detect
-									if (canHalfTone) {
-										Debug.Log ("DemiTone");
-										++indexNote;
-										newNote.GetComponent<Image> ().color = new Color (0, 0, 0); //black
-									}
-								}
+                                if (demiTone && canHalfTone)
+                                { //tabarnak de criss de marde pk les input sont pas detect
 
-								//Debug.Log(indexNote);
-				
-								Manager.Instance.selectedCube.children [melodies.value].partition [i] = indexNote;
+                                    Debug.Log("DemiTone");
+                                    ++indexNote;
+
+                                    var newNote = (GameObject)Instantiate(Resources.Load("NoteSpriteDemiToneObject"));
+                                    newNote.transform.position = new Vector3((int)partition.position.x + ((i - nbcolumn) * stepX) + 18.75f, magnetYPosition, 0);
+                                    newNote.transform.SetParent(GameObject.Find("Canvas2DPartition").transform, false);
+                                    newNote.transform.SetAsLastSibling();
+                                    newNote.name = "Note_" + (i - nbcolumn) + "_" + partitionIn;
+
+                                }
+                                else
+                                {
+                                    var newNote = (GameObject)Instantiate(Resources.Load("NoteSpriteObject"));
+                                    newNote.transform.position = new Vector3((int)partition.position.x + ((i - nbcolumn) * stepX) + 18.75f, magnetYPosition, 0);
+                                    newNote.transform.SetParent(GameObject.Find("Canvas2DPartition").transform, false);
+                                    newNote.transform.SetAsLastSibling();
+                                    newNote.name = "Note_" + (i - nbcolumn) + "_" + partitionIn;
+                                }
+
+                                //Debug.Log(indexNote);
+
+                                Manager.Instance.selectedCube.children [melodies.value].partition [i] = indexNote;
 								//Debug.Log ("Note_" + i + "_" + partitionIn + ", value : " + indexNote + ", magnetpos : " + magnetYPosition);
 							}
 						}

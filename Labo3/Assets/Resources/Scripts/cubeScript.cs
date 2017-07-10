@@ -8,7 +8,7 @@ public class cubeScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        cube = new CubeParent(Manager.Instance.getUniqueCubeName());
+        cube = new CubeParent(Manager.Instance.getUniqueCubeName(), gameObject.transform.position);
         Manager.Instance.rootCubes.Add(cube);
 	}
 	

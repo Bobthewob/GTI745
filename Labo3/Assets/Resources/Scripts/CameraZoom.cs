@@ -303,8 +303,20 @@ public class CameraZoom : MonoBehaviour
 				}else if (Input.GetMouseButtonUp(0)){ //left click up
 					//TODO : play the list	
 					playSelect = false;
-				}else{ //we are dragging the mouse over the elements we want to add in the playlist
-					//TODO
+
+                        var ray = camera.ScreenPointToRay(Input.mousePosition);
+                        RaycastHit hitInfo;
+                        Physics.Raycast(ray, out hitInfo);
+                        if (hitInfo.collider != null)
+                        {
+                            Manager.Instance.selectedCube = hitInfo.collider.gameObject.GetComponent<cubeScript>().cube;
+                            GameObject.Find("MusicSource").GetComponent<MusicTest>().PlaySong = 2;
+                            Manager.Instance.cursorType = cursorType.FreeView;
+                        }
+
+                }
+                else{ //we are dragging the mouse over the elements we want to add in the playlist
+			    //TODO
 					if(playSelect){
 						
 					}

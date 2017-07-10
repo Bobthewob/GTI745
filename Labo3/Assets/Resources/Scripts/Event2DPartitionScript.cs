@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using System.Threading;
 
 public class Event2DPartitionScript : MonoBehaviour {
 
@@ -11,7 +12,7 @@ public class Event2DPartitionScript : MonoBehaviour {
 	public InputField melodieNameInput;
 	public Text melodyNameLabel;
 
-	public void onClickSaveButton(){		
+    public void onClickSaveButton(){		
 		Manager.Instance.selectedCube.children[dropDown.value].name = melodieNameInput.text;
 		dropDown.options [dropDown.value].text = melodieNameInput.text;
 		melodyNameLabel.text = melodieNameInput.text;
@@ -31,18 +32,25 @@ public class Event2DPartitionScript : MonoBehaviour {
 		Manager.Instance.loadUINotes (dropDown.value);
 	}	
 
-	public void onClickPlayButton(){
-		Debug.Log ("Press play");
-		Manager.Instance.playSong = true;
-	}
+	public void onClickPlaySelectedButton(){
+		Debug.Log ("Press play selected");
+        GameObject.Find("MusicSource").GetComponent<MusicTest>().PlaySong = 0;
+    }
 
-	public void onClickClearSheet(){
-		var partition = Manager.Instance.selectedCube.children [dropDown.value].partition;
+    public void onClickPlayAllButton()
+    {
+        Debug.Log("Press play selected");
+        //Manager.Instance.playSong = true;
+        GameObject.Find("MusicSource").GetComponent<MusicTest>().PlaySong = 1;
+    }
 
-		for (int i = 0; i < partition.Count() - 1; i++) {
-			partition [i] = 255;
-		}
+    public void onClickClearSheet(){
+	    var partition = Manager.Instance.selectedCube.children [dropDown.value].partition;
 
-		Manager.Instance.clearUINotes ();
+	    for (int i = 0; i < partition.Count() - 1; i++) {
+		    partition [i] = 255;
+	    }
+
+	    Manager.Instance.clearUINotes ();
 	}
 }

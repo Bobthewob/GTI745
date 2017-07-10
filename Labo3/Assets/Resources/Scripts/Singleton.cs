@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 /// <summary>
 /// Be aware this will not prevent a non singleton constructor
@@ -120,23 +121,65 @@ public class Manager : Singleton<Manager>
 		partitionUI.position = GameObject.Find ("Partition").GetComponent<RectTransform> ().position;
 
 		for (int i = 0; i < nbcolumn; i++) { //for each notes in partition 1
-			if (partition [i] != 255) {
-				float yPos = ((int)(partition [i] / 2) * stepY) + 654;
-				float xPos = (int)partitionUI.position.x + (i * stepX) + 18.75f;
+            if (partition[i] != 255)
+            {
 
-				var newNote = (GameObject)Instantiate (Resources.Load ("NoteSpriteObject"));
-				newNote.transform.position = new Vector3 (xPos, yPos, 0);
-				newNote.transform.SetParent (GameObject.Find ("Canvas2DPartition").transform, false);
-				newNote.transform.SetAsLastSibling ();	
-				newNote.name = "Note_" + i + "_1";
-			}
+                int offset = 0;
+                int indexNote = partition[i];
+
+                if ((int)(indexNote / 36) > 0)
+                {
+                    offset = 6;
+                }
+                else if ((int)(indexNote / 29) > 0)
+                {
+                    offset = 5;
+                }
+                else if ((int)(indexNote / 24) > 0)
+                {
+                    offset = 4;
+                }
+                else if ((int)(indexNote / 17) > 0)
+                {
+                    offset = 3;
+                }
+                else if ((int)(indexNote / 12) > 0)
+                {
+                    offset = 2;
+                }
+                else if ((int)(indexNote / 5) > 0)
+                {
+                    offset = 1;
+                }
+
+                indexNote = partition[i] + offset;
+
+                GameObject newNote;
+
+                if (indexNote % 2 == 0)
+                {
+                    newNote = (GameObject)Instantiate(Resources.Load("NoteSpriteObject"));
+                }
+                else
+                {
+                    newNote = (GameObject)Instantiate(Resources.Load("NoteSpriteDemiToneObject"));
+                }
+
+                indexNote = indexNote / 2;
+
+                float yPos = (indexNote * stepY) + 654;
+                float xPos = (int)partitionUI.position.x + (i * stepX) + 18.75f;
+
+                newNote.transform.position = new Vector3(xPos, yPos, 0);
+                newNote.transform.SetParent(GameObject.Find("Canvas2DPartition").transform, false);
+                newNote.transform.SetAsLastSibling();
+                newNote.name = "Note_" + i + "_1";
+            }
 		}
 		for (int i = nbcolumn; i < nbcolumn * 2; i++) { //for each notes in partition 2
 			if (partition [i] != 255) {
-				Debug.Log ("UI partition 2 : " + partition [i]);
 
 				int offset = 0;
-				bool canHalfTone = true;
 				int indexNote = partition [i] * 2;
 
 				if ((int)(indexNote / 36) > 0)
@@ -152,13 +195,24 @@ public class Manager : Singleton<Manager>
 				else if ((int)(indexNote / 5) > 0)
 					offset = 1;
 
-				indexNote = partition [i] + offset;
-				indexNote = indexNote / 2;
+                indexNote = partition[i] + offset;
 
-				float yPos = ((int)(partition [i] / 2) * stepY) + 354;
+                GameObject newNote;
+
+                if (indexNote % 2 == 0)
+                {
+                    newNote = (GameObject)Instantiate(Resources.Load("NoteSpriteObject"));
+                }
+                else
+                {
+                    newNote = (GameObject)Instantiate(Resources.Load("NoteSpriteDemiToneObject"));
+                }
+
+                indexNote = indexNote / 2;
+
+                float yPos = (indexNote * stepY) + 354;
 				float xPos = (int)partitionUI.position.x + ((i - nbcolumn) * stepX) + 18.75f;
 
-				var newNote = (GameObject)Instantiate (Resources.Load ("NoteSpriteObject"));
 				newNote.transform.position = new Vector3 (xPos, yPos, 0);
 				newNote.transform.SetParent (GameObject.Find ("Canvas2DPartition").transform, false);
 				newNote.transform.SetAsLastSibling ();	
@@ -176,10 +230,13 @@ public class Cube
 public class CubeParent : Cube, IEnumerable<CubeChildren> {
     public List<CubeChildren> children;
     public string name;
+    public Vector3 position;
 
-    public CubeParent(string name) {
+    public CubeParent(string name, Vector3 position) {
         children = new List<CubeChildren>();
         this.name = name;
+        this.position = position;
+
         children.Add(new CubeChildren(name));
     }
 
@@ -197,7 +254,7 @@ public class CubeParent : Cube, IEnumerable<CubeChildren> {
 public class CubeChildren : Cube {
     public int[] partition;
     public string name;
-
+    
     public CubeChildren(string name)
     {
         partition = new int[80];
