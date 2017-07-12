@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class EditCubeNameScript : MonoBehaviour {
 
-    public Text text;
+	public InputField input;
 
     public void onClickEditCubeName() {
-        Manager.Instance.selectedCube.name = text.text;
+		Manager.Instance.selectedCube.name = input.text;
     }
 }

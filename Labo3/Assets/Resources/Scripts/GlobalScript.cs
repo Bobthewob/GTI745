@@ -6,8 +6,11 @@ using UnityEngine.UI;
 public class GlobalScript : MonoBehaviour {
 
     public InputField CubeNameInput;
-    public Button EditCubeName;
     public Button EditMelodies;
+	public Button CreateStars;
+	public Button MergeStars;
+	public Button MoveStars;
+	public Button DeleteStars;
 
     // Use this for initialization
     void Start () {
@@ -20,13 +23,28 @@ public class GlobalScript : MonoBehaviour {
         {
             CubeNameInput.gameObject.SetActive(false);
             EditMelodies.gameObject.SetActive(false);
-            EditCubeName.gameObject.SetActive(false);
+			DeleteStars.gameObject.SetActive(false);
         }
         else
         {
             CubeNameInput.gameObject.SetActive(true);
             EditMelodies.gameObject.SetActive(true);
-            EditCubeName.gameObject.SetActive(true);
+			DeleteStars.gameObject.SetActive(true);
         }
+
+		switch (Manager.Instance.cursorType) {
+		case cursorType.CreateCube:
+			MergeStars.image.color = new Color(1f, 1f, 1f);
+			MoveStars.image.color = new Color(1f, 1f, 1f);
+			break;
+		case cursorType.MergeCube:
+			CreateStars.image.color = new Color(1f, 1f, 1f);
+			MoveStars.image.color = new Color(1f, 1f, 1f);
+			break;
+		case cursorType.MoveCube:
+			CreateStars.image.color = new Color(1f, 1f, 1f);
+			MergeStars.image.color = new Color(1f, 1f, 1f);
+			break;
+		}
 	}
 }

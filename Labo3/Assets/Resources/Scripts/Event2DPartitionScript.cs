@@ -21,6 +21,9 @@ public class Event2DPartitionScript : MonoBehaviour {
 
 	public void onClickReturnButton(){		
 		Manager.Instance.cursorType = cursorType.FreeView;
+		MusicTest musicScript = GameObject.Find("MusicSource").GetComponent<MusicTest>();
+		musicScript.PlaySong = MusicTest.MusicPlayer.NotPlaying;
+
 		SceneManager.UnloadSceneAsync ("2dPartition");
 	}
 

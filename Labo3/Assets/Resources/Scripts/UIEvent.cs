@@ -60,4 +60,18 @@ public class UIEvent : MonoBehaviour {
             button.image.color = new Color(0.65f, 0.65f, 0.65f);
         }
     }
+
+	public void onClickMoveCube()
+	{
+		if (Manager.Instance.cursorType == cursorType.MoveCube)
+		{
+			Manager.Instance.cursorType = cursorType.FreeView;
+			button.image.color = new Color(1f, 1f, 1f);
+		}
+		else
+		{
+			Manager.Instance.cursorType = cursorType.MoveCube;
+			button.image.color = new Color(0.65f, 0.65f, 0.65f);
+		}
+	}
 }

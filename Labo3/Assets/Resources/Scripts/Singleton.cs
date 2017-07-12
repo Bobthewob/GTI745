@@ -86,6 +86,7 @@ public enum cursorType
     FreeView,
     CreateCube,
     MergeCube,
+	MoveCube,
 	EditMelody,
 	Play
 }
@@ -101,7 +102,7 @@ public class Manager : Singleton<Manager>
 	public bool playSong = false;
 
     public string getUniqueCubeName() {
-        return "Cube #" + ++cubeUID;
+        return "Star #" + ++cubeUID;
     }
 
 	public void clearUINotes(){

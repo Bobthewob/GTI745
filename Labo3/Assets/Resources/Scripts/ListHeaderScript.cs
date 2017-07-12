@@ -15,7 +15,7 @@ public class ListHeaderScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (Manager.Instance.selectedCube == null){
-            text.text = "Cubes";
+            text.text = "Stars";
         }
         else {
             text.text = "Melodies";

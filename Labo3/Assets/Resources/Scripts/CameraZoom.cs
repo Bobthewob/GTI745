@@ -24,6 +24,7 @@ public class CameraZoom : MonoBehaviour
     private GameObject firstCubeMerge = null;
     private GameObject secondCubeMerge = null;
     private GameObject cubeSelection = null;
+	private GameObject SelectedMoveCube = null;
 
     // Use this for initialization
     void Start()
@@ -202,7 +203,7 @@ public class CameraZoom : MonoBehaviour
                         else {
                             if (cubeSelection != null) {
                                 Manager.Instance.selectedCube = null;
-							cubeSelection.GetComponent<MeshRenderer> ().material = (Material)Resources.Load ("SunMaterial");
+								cubeSelection.GetComponent<MeshRenderer> ().material = (Material)Resources.Load ("SunMaterial");
                                 //cubeSelection.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
                             }
                         }
@@ -297,31 +298,94 @@ public class CameraZoom : MonoBehaviour
                         }
                     }
                     break;
-			/*case cursorType.Play:
-				if (Input.GetMouseButtonDown (0)) {
-					playSelect = true; //now for each frame that we collide with a sun we add it in the playlist until we release the click
-				}else if (Input.GetMouseButtonUp(0)){ //left click up
-					//TODO : play the list	
-					playSelect = false;
+			case cursorType.MoveCube:
+				if (Input.GetMouseButtonDown (0)) { //first left click
+					holdMousePosition = Input.mousePosition;
 
-                        var ray = camera.ScreenPointToRay(Input.mousePosition);
-                        RaycastHit hitInfo;
-                        Physics.Raycast(ray, out hitInfo);
-                        if (hitInfo.collider != null)
-                        {
-                            Manager.Instance.selectedCube = hitInfo.collider.gameObject.GetComponent<cubeScript>().cube;
-                            GameObject.Find("MusicSource").GetComponent<MusicTest>().PlaySong = 2;
-                            Manager.Instance.cursorType = cursorType.FreeView;
-                        }
+					var ray = camera.ScreenPointToRay (Input.mousePosition);
+					RaycastHit hitInfo;
+					Physics.Raycast (ray, out hitInfo);
+					if (hitInfo.collider != null) {
+						SelectedMoveCube = hitInfo.collider.gameObject;
+					} else {
+						SelectedMoveCube = null;
+					}
+				} else if (Input.GetMouseButton (0)) { // left click
+					
+					if (SelectedMoveCube != null) {
+						var currentMousePosition = Input.mousePosition;
 
-                }
-                else{ //we are dragging the mouse over the elements we want to add in the playlist
-			    //TODO
-					if(playSelect){
-						
+						float grandeur = (currentMousePosition - holdMousePosition).magnitude * speed;
+
+						// translation
+						var hold3DMousePosition = GetComponent<Camera> ().ViewportToWorldPoint (
+							                          new Vector3 (
+								                          currentMousePosition.x,
+								                          currentMousePosition.y,
+								                          GetComponent<Camera> ().nearClipPlane
+							                          )
+						                          );
+						var initial3DMousePosition = GetComponent<Camera> ().ViewportToWorldPoint (
+							                             new Vector3 (
+								                             holdMousePosition.x,
+								                             holdMousePosition.y,
+								                             GetComponent<Camera> ().nearClipPlane
+							                             )
+						                             );
+
+						var directionMouse = hold3DMousePosition - initial3DMousePosition;
+						directionMouse.Normalize ();
+
+						Debug.Log (SelectedMoveCube.GetComponent<Transform> ().position);
+						Debug.Log (directionMouse);
+
+						SelectedMoveCube.GetComponent<Transform> ().position = new Vector3 (
+							SelectedMoveCube.GetComponent<Transform> ().position.x + directionMouse.x * grandeur,
+							SelectedMoveCube.GetComponent<Transform> ().position.y + directionMouse.y * grandeur,
+							SelectedMoveCube.GetComponent<Transform> ().position.z + directionMouse.z * grandeur
+						);
+
+						holdMousePosition = Input.mousePosition;
+					}
+				} else if (Input.GetAxis ("Mouse ScrollWheel") < 0) {
+
+					var ray = camera.ScreenPointToRay (Input.mousePosition);
+					RaycastHit hitInfo;
+					Physics.Raycast (ray, out hitInfo);
+					if (hitInfo.collider != null) {
+						SelectedMoveCube = hitInfo.collider.gameObject;
+
+						var directionVectorFoward = (SelectedMoveCube.GetComponent<Transform> ().position - gameObject.transform.position);
+						directionVectorFoward.Normalize ();
+
+						Debug.Log (directionVectorFoward);
+
+						SelectedMoveCube.GetComponent<Transform> ().position = new Vector3 (
+							SelectedMoveCube.GetComponent<Transform> ().position.x + directionVectorFoward.x * 0.5f,
+							SelectedMoveCube.GetComponent<Transform> ().position.y + directionVectorFoward.y * 0.5f,
+							SelectedMoveCube.GetComponent<Transform> ().position.z + directionVectorFoward.z * 0.5f
+						);
+					}
+
+				} else if (Input.GetAxis ("Mouse ScrollWheel") > 0) {
+
+					var ray = camera.ScreenPointToRay (Input.mousePosition);
+					RaycastHit hitInfo;
+					Physics.Raycast (ray, out hitInfo);
+					if (hitInfo.collider != null) {
+						SelectedMoveCube = hitInfo.collider.gameObject;
+
+						var directionVectorBackward = (gameObject.transform.position - SelectedMoveCube.GetComponent<Transform> ().position);
+						directionVectorBackward.Normalize ();
+
+						SelectedMoveCube.GetComponent<Transform> ().position = new Vector3 (
+							SelectedMoveCube.GetComponent<Transform> ().position.x + directionVectorBackward.x * 0.5f,
+							SelectedMoveCube.GetComponent<Transform> ().position.y + directionVectorBackward.y * 0.5f,
+							SelectedMoveCube.GetComponent<Transform> ().position.z + directionVectorBackward.z * 0.5f
+						);
 					}
 				}
-				break;*/
+				break;
             }
         }
     }
@@ -343,4 +407,12 @@ public class CameraZoom : MonoBehaviour
             transform.position.z - direction.z * speedZoom
         );
     }
+
+	public void deleteSelectedCube(){
+		if (cubeSelection != null) {
+			Manager.Instance.rootCubes.Remove (cubeSelection.GetComponent<cubeScript> ().cube);
+			Manager.Instance.selectedCube = null;
+			GameObject.Destroy (cubeSelection);
+		}
+	}
 }
