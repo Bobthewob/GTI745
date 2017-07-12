@@ -297,7 +297,7 @@ public class CameraZoom : MonoBehaviour
                         }
                     }
                     break;
-			case cursorType.Play:
+			/*case cursorType.Play:
 				if (Input.GetMouseButtonDown (0)) {
 					playSelect = true; //now for each frame that we collide with a sun we add it in the playlist until we release the click
 				}else if (Input.GetMouseButtonUp(0)){ //left click up
@@ -321,7 +321,7 @@ public class CameraZoom : MonoBehaviour
 						
 					}
 				}
-				break;
+				break;*/
             }
         }
     }

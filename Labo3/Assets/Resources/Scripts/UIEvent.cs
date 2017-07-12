@@ -30,7 +30,12 @@ public class UIEvent : MonoBehaviour {
     }
 
 	public void onClickPlayMode() {
-		if (Manager.Instance.cursorType == cursorType.Play)
+		MusicTest musicScript = GameObject.Find ("MusicSource").GetComponent<MusicTest>();
+
+		if ((int)musicScript.PlaySong == -1) {
+			musicScript.PlaySong = MusicTest.MusicPlayer.All3D;
+		}
+		/*if (Manager.Instance.cursorType == cursorType.Play)
 		{
 			Manager.Instance.cursorType = cursorType.FreeView;
 			button.image.color = new Color(1f, 1f, 1f);
@@ -39,7 +44,7 @@ public class UIEvent : MonoBehaviour {
             Debug.Log("PlayMode");
 			Manager.Instance.cursorType = cursorType.Play;
 			button.image.color = new Color(0.65f, 0.65f, 0.65f);
-		}
+		}*/
 	}
 
     public void onClickEditCube()

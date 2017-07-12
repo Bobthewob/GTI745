@@ -180,7 +180,7 @@ public class Manager : Singleton<Manager>
 			if (partition [i] != 255) {
 
 				int offset = 0;
-				int indexNote = partition [i] * 2;
+				int indexNote = partition[i];
 
 				if ((int)(indexNote / 36) > 0)
 					offset = 6;
