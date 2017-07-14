@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Linq;
 
 public class CameraZoom : MonoBehaviour
@@ -36,6 +37,16 @@ public class CameraZoom : MonoBehaviour
     void Update()
     {
         var menuRectangle = GameObject.Find("Panel").GetComponent<RectTransform>().rect;
+
+        if (Manager.Instance.transitionIn)
+        {
+            cameraTransitionIn();
+        }
+        else if (Manager.Instance.transitionOut)
+        {
+            Debug.Log("Transition Out");
+            cameraTransitionOut();
+        }
 
         if (!menuRectangle.Contains(Input.mousePosition))
         { //if we have the cursor over the menu we do not want to move the camera in any way
@@ -415,4 +426,36 @@ public class CameraZoom : MonoBehaviour
 			GameObject.Destroy (cubeSelection);
 		}
 	}
+
+    public void cameraTransitionIn()
+    {
+        Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+        Vector3 lTargetDir = Manager.Instance.selectedCube.position - cam.transform.position;
+        speed += 0.01f;
+
+        //cam.transform.LookAt(Manager.Instance.selectedCube.position);
+        //cam.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(Manager.Instance.selectedCube.position), Time.deltaTime * 5);
+
+        cam.transform.rotation = Quaternion.RotateTowards(cam.transform.rotation, Quaternion.LookRotation(lTargetDir), Time.deltaTime * 30);
+        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 4, Time.deltaTime * (1 + speed));
+
+        if (cam.fieldOfView < 4.1)
+        {
+            speed = 0.01f;
+            Manager.Instance.transitionIn = false;
+            SceneManager.LoadSceneAsync("2DPartition", LoadSceneMode.Additive);
+        }
+    }
+
+    public void cameraTransitionOut()
+    {
+        Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+
+        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 60, Time.deltaTime * 1);
+
+        if (cam.fieldOfView > 59.9)
+        {
+            Manager.Instance.transitionIn = false;
+        }
+    }
 }

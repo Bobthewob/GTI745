@@ -100,6 +100,8 @@ public class Manager : Singleton<Manager>
     public CubeParent selectedCube;                       //currently selected cube
     public int cubeUID = 0;
 	public bool playSong = false;
+    public bool transitionIn = false;
+    public bool transitionOut = false;
 
     public string getUniqueCubeName() {
         return "Star #" + ++cubeUID;

@@ -11,6 +11,7 @@ public class Event2DPartitionScript : MonoBehaviour {
 	public Dropdown dropDown;
 	public InputField melodieNameInput;
 	public Text melodyNameLabel;
+    private bool isReturning = false;
 
     public void onClickSaveButton(){		
 		Manager.Instance.selectedCube.children[dropDown.value].name = melodieNameInput.text;
@@ -24,10 +25,12 @@ public class Event2DPartitionScript : MonoBehaviour {
 		MusicTest musicScript = GameObject.Find("MusicSource").GetComponent<MusicTest>();
 		musicScript.PlaySong = MusicTest.MusicPlayer.NotPlaying;
 
-		SceneManager.UnloadSceneAsync ("2dPartition");
-	}
+        Debug.Log("return");
+        Manager.Instance.transitionOut = true;
+        SceneManager.UnloadSceneAsync ("2dPartition");
+    }
 
-	public void onChangedEventDropDown(){
+    public void onChangedEventDropDown(){
 		melodieNameInput.text = dropDown.options [dropDown.value].text;
 		melodyNameLabel.text = dropDown.options [dropDown.value].text;
 
