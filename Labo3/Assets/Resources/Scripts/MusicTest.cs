@@ -120,7 +120,7 @@ public class MusicTest : MonoBehaviour {
                 {
                         foreach (var melody in cubes.children)
                         {
-                            var newMelo = new MelodyWithPosition(melody, cubes.position);
+                            var newMelo = new MelodyWithPosition(melody, cubes.star);
                             allmelodies.Add(newMelo);
                         }
                 }
@@ -139,7 +139,7 @@ public class MusicTest : MonoBehaviour {
                                 var currentNote3D = Instantiate(Resources.Load("note3D", typeof(GameObject))) as GameObject;
                                 var currentSource = currentNote3D.GetComponent<AudioSource>();
                                 sources3D.Add(currentNote3D);
-                                currentSource.transform.position = melodyWithPosition.position;
+                                currentSource.transform.position = melodyWithPosition.position.transform.position;
 
                                 currentSource.clip = Resources.Load (note.ToString (), typeof(AudioClip)) as AudioClip;
 								currentSource.spatialBlend = 1f;
@@ -163,10 +163,10 @@ public class MusicTest : MonoBehaviour {
 
 struct MelodyWithPosition {
     public CubeChildren melody;
-    public Vector3 position;
+    public GameObject position;
 
-    public MelodyWithPosition(CubeChildren melody, Vector3 position) {
+    public MelodyWithPosition(CubeChildren melody, GameObject star) {
         this.melody = melody;
-        this.position = position;
+        this.position = star;
     }
 }
