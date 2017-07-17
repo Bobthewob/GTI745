@@ -23,7 +23,8 @@ public class Event2DPartitionScript : MonoBehaviour {
 	public void onClickReturnButton(){		
 		Manager.Instance.cursorType = cursorType.FreeView;
 		MusicTest musicScript = GameObject.Find("MusicSource").GetComponent<MusicTest>();
-		musicScript.PlaySong = MusicTest.MusicPlayer.NotPlaying;
+        musicScript.StopMusic();
+        //musicScript.PlaySong = MusicTest.MusicPlayer.NotPlaying;
 
         Debug.Log("return");
         Manager.Instance.transitionOut = true;

@@ -239,6 +239,7 @@ public class CubeParent : Cube, IEnumerable<CubeChildren> {
         children = new List<CubeChildren>();
         this.name = name;
         this.position = position;
+        Debug.Log(position);
 
         children.Add(new CubeChildren(name));
     }

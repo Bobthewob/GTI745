@@ -17,20 +17,12 @@ public class SwitchSceneScript : MonoBehaviour {
 
     public void Update()
     {
-        /*Debug.Log(Manager.Instance.transitionOut);
 
-        if (Manager.Instance.transitionIn)
-        {
-            cameraZoomIn();
-        }
-        else if (Manager.Instance.transitionOut)
-        {
-            Debug.Log("Transition Out");
-            cameraZoomOut();
-        }*/
     }
 
     public void OnClick() {
         Manager.Instance.transitionIn = true;
+        MusicTest musicScript = GameObject.Find("MusicSource").GetComponent<MusicTest>();
+        musicScript.StopMusic();
     }
 }

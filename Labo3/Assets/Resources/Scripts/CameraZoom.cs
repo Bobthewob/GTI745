@@ -44,7 +44,7 @@ public class CameraZoom : MonoBehaviour
         }
         else if (Manager.Instance.transitionOut)
         {
-            Debug.Log("Transition Out");
+           // Debug.Log("Transition Out");
             cameraTransitionOut();
         }
 
