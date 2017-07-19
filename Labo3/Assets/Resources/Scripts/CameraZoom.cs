@@ -44,7 +44,7 @@ public class CameraZoom : MonoBehaviour
         }
         else if (Manager.Instance.transitionOut)
         {
-            Debug.Log("Transition Out");
+           // Debug.Log("Transition Out");
             cameraTransitionOut();
         }
 
@@ -430,7 +430,7 @@ public class CameraZoom : MonoBehaviour
     public void cameraTransitionIn()
     {
         Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
-        Vector3 lTargetDir = Manager.Instance.selectedCube.position - cam.transform.position;
+        Vector3 lTargetDir = Manager.Instance.selectedCube.star.transform.position - cam.transform.position;
         speed += 0.01f;
 
         //cam.transform.LookAt(Manager.Instance.selectedCube.position);

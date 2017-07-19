@@ -8,6 +8,7 @@ public class MusicTest : MonoBehaviour {
 
 	public MusicPlayer PlaySong = MusicPlayer.NotPlaying;
     private List<AudioSource> sources = new List<AudioSource>();
+    private List<GameObject> sources3D = new List<GameObject>();
     private int currentNoteIndex = 0;
     private float time = 0.25f;
     private bool firstRun = true;
@@ -23,6 +24,20 @@ public class MusicTest : MonoBehaviour {
 	void Start () {
 		
 	}
+
+    //stopMusicFromPlaying
+    public void StopMusic() {
+        PlaySong = MusicPlayer.NotPlaying;
+        sources.Clear();
+        firstRun = true;
+        currentNoteIndex = 0;
+        time = 0.25f;
+        foreach (var source3D in sources3D)
+        {
+            GameObject.Destroy(source3D);
+        }
+        sources3D.Clear();
+    }
 
 	// Update is called once per frame
 	void Update () {
@@ -55,11 +70,8 @@ public class MusicTest : MonoBehaviour {
 					++currentNoteIndex;
 
 					if (currentNoteIndex == 80) {
-						PlaySong = MusicPlayer.NotPlaying;
-						currentNoteIndex = 0;
-						time = 0.25f;
-						sources.Clear ();
-					}
+                        StopMusic();
+                    }
 				}
 			break;
 		case MusicPlayer.Melodies2D:
@@ -71,16 +83,13 @@ public class MusicTest : MonoBehaviour {
 
 				foreach (var melody in Manager.Instance.selectedCube.children) {
 					if (currentNoteIndex == 80) {
-						PlaySong = MusicPlayer.NotPlaying;
-						currentNoteIndex = 0;
-						time = 0.25f;
-						sources = new List<AudioSource> ();
-						break; // so we do not play the note at the index 0 of the other melodies
+                        StopMusic();
+                        break; // so we do not play the note at the index 0 of the other melodies
 					} else {
 						sources.Add (gameObject.AddComponent<AudioSource> ());
 						var currentSource = sources [sources.Count - 1];
 						int note = melody.partition [currentNoteIndex];
-
+                        
 						if (note != 255) {
 							Debug.Log ("note played : " + note + " time : " + currentNoteIndex);
 
@@ -101,47 +110,63 @@ public class MusicTest : MonoBehaviour {
 		case MusicPlayer.All3D:	
 			
 			time += Time.deltaTime; //delta time is the time in second between 2 frames
-			int totalMelodiesCount = Manager.Instance.rootCubes.Sum(x => x.children.Count());
+                                    //int totalMelodiesCount = Manager.Instance.rootCubes.Sum(x => x.children.Count());
 
-			if (time > 0.25f) {
+            if (time > 0.25f) {
 				time = 0;
+                List<MelodyWithPosition> allmelodies = new List<MelodyWithPosition>();
+                
+                foreach (var cubes in Manager.Instance.rootCubes)
+                {
+                        foreach (var melody in cubes.children)
+                        {
+                            var newMelo = new MelodyWithPosition(melody, cubes.star);
+                            allmelodies.Add(newMelo);
+                        }
+                }
+  		
+				foreach (var melodyWithPosition in allmelodies) {
+						if (currentNoteIndex == 80) {
+                            StopMusic();
+                            break; // so we do not play the note at the index 0 of the other melodies
+						} else {
+                            
+                            int note = melodyWithPosition.melody.partition [currentNoteIndex];
 
-				foreach (var cubes in Manager.Instance.rootCubes) {					
-					foreach (var melody in cubes.children) {
-							if (currentNoteIndex == 80) {
-								PlaySong = MusicPlayer.NotPlaying;
-								currentNoteIndex = 0;
-								time = 0.25f;
-								sources = new List<AudioSource> ();
-								break; // so we do not play the note at the index 0 of the other melodies
-							} else {
-								sources.Add (gameObject.AddComponent<AudioSource> ());
-								var currentSource = sources [sources.Count - 1];
-								int note = melody.partition [currentNoteIndex];
+							if (note != 255) {
+                                //Debug.Log ("note played : " + melodyWithPosition.melody.partition[currentNoteIndex] + " position : " + melodyWithPosition.position);
 
-								currentSource.transform.position = cubes.position;
-								Debug.Log (currentSource.transform.position.ToString ());
+                                var currentNote3D = Instantiate(Resources.Load("note3D", typeof(GameObject))) as GameObject;
+                                var currentSource = currentNote3D.GetComponent<AudioSource>();
+                                sources3D.Add(currentNote3D);
+                                currentSource.transform.position = melodyWithPosition.position.transform.position;
 
-								if (note != 255) {
-									Debug.Log ("note played : " + note + " time : " + currentNoteIndex);
+                                currentSource.clip = Resources.Load (note.ToString (), typeof(AudioClip)) as AudioClip;
+								currentSource.spatialBlend = 1f;
+								currentSource.dopplerLevel = 0;
+								currentSource.Play ();
 
-									currentSource.clip = Resources.Load (note.ToString (), typeof(AudioClip)) as AudioClip;
-									currentSource.spatialBlend = 1f;
-									currentSource.dopplerLevel = 0;
-									currentSource.Play ();
-
-									if (sources.Count > totalMelodiesCount) {
-										var oldSource = sources [sources.Count - (totalMelodiesCount + 1)];
-										oldSource.Stop ();
-									}
+								if (sources3D.Count > allmelodies.Count()) {
+									var oldSource = sources3D[sources3D.Count - (allmelodies.Count() + 1)];
+									oldSource.GetComponent<AudioSource>().Stop ();
 								}
 							}
 						}
-
-						++currentNoteIndex;
 					}
+
+					++currentNoteIndex;
 				}
-			break;
+			    break;
         }    
+    }
+}
+
+struct MelodyWithPosition {
+    public CubeChildren melody;
+    public GameObject position;
+
+    public MelodyWithPosition(CubeChildren melody, GameObject star) {
+        this.melody = melody;
+        this.position = star;
     }
 }

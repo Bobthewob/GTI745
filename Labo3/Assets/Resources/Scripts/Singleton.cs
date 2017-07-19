@@ -233,13 +233,13 @@ public class Cube
 public class CubeParent : Cube, IEnumerable<CubeChildren> {
     public List<CubeChildren> children;
     public string name;
-    public Vector3 position;
+    public GameObject star;
 
-    public CubeParent(string name, Vector3 position) {
+    public CubeParent(string name, GameObject star) {
         children = new List<CubeChildren>();
         this.name = name;
-        this.position = position;
-
+        this.star = star;
+        
         children.Add(new CubeChildren(name));
     }
 
