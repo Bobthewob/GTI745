@@ -102,6 +102,7 @@ public class Manager : Singleton<Manager>
 	public bool playSong = false;
     public bool transitionIn = false;
     public bool transitionOut = false;
+    public cubeScript starPlaying = null;
 
     public string getUniqueCubeName() {
         return "Star #" + ++cubeUID;

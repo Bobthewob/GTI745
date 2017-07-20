@@ -6,6 +6,7 @@ public class cubeScript : MonoBehaviour {
 
     public CubeParent cube;
     public static int menuStatus = 0;
+    public bool isPlaying = false;
 
     // Use this for initialization
     void Start () {
@@ -17,4 +18,16 @@ public class cubeScript : MonoBehaviour {
 	void Update () {
        
 	}
+
+    public void OnMouseEnter()
+    {
+        GameObject glow = this.transform.Find("Glow Red").gameObject;
+        glow.SetActive(true);
+    }
+
+    public void OnMouseExit()
+    {
+        GameObject glow = this.transform.Find("Glow Red").gameObject;
+        glow.SetActive(false);
+    }
 }

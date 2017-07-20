@@ -5,6 +5,7 @@ using UnityEngine;
 public class cubeScript : MonoBehaviour {
 
     public CubeParent cube;
+    public static int menuStatus = 0;
 
 	// Use this for initialization
 	void Start () {

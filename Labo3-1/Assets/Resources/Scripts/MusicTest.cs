@@ -14,7 +14,7 @@ public class MusicTest : MonoBehaviour {
     private bool firstRun = true;
     private CubeParent star;
 
-	public enum MusicPlayer{
+    public enum MusicPlayer{
 		NotPlaying = -1,
 		Melody2D = 0,
 		Melodies2D = 1,
@@ -27,9 +27,16 @@ public class MusicTest : MonoBehaviour {
 		
 	}
 
-    public void startMusicMelodies2D(CubeParent star)
+    public void startMusicMelodies2D(cubeScript star)
     {
-        this.star = star;
+        if (Manager.Instance.starPlaying != null)
+        {
+            Manager.Instance.starPlaying.isPlaying = false;
+        }
+
+        this.star = star.cube;
+        Manager.Instance.starPlaying = star;
+
         startMusic(MusicPlayer.Single3D);
     }
 
@@ -51,6 +58,11 @@ public class MusicTest : MonoBehaviour {
         firstRun = true;
         currentNoteIndex = 0;
         time = 0.25f;
+
+        if (Manager.Instance.starPlaying != null) {
+            Manager.Instance.starPlaying.isPlaying = false;
+        }
+
         foreach (var source3D in sources3D)
         {
             GameObject.Destroy(source3D);
@@ -207,6 +219,7 @@ public class MusicTest : MonoBehaviour {
                             if (note != 255)
                             {
                                 //Debug.Log ("note played : " + melodyWithPosition.melody.partition[currentNoteIndex] + " position : " + melodyWithPosition.position);
+                                Manager.Instance.starPlaying.isPlaying = true;
 
                                 var currentNote3D = Instantiate(Resources.Load("note3D", typeof(GameObject))) as GameObject;
                                 var currentSource = currentNote3D.GetComponent<AudioSource>();

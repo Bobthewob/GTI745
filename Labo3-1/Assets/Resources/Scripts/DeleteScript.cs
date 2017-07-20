@@ -24,4 +24,16 @@ public class DeleteScript : MonoBehaviour {
             GameObject.Destroy(this.transform.parent.transform.parent.gameObject);
         }
     }
+
+    public void OnMouseEnter()
+    {
+        Component halo = this.gameObject.GetComponent("Halo");
+        halo.GetType().GetProperty("enabled").SetValue(halo, true, null);
+    }
+
+    public void OnMouseExit()
+    {
+        Component halo = this.gameObject.GetComponent("Halo");
+        halo.GetType().GetProperty("enabled").SetValue(halo, false, null);
+    }
 }
