@@ -248,7 +248,7 @@ public class MusicTest : MonoBehaviour {
 
     public void UpdateNote(int position)
     {
-        var note = GameObject.Find("Note_" + position + "_" + partitionIn);
+        //var note = GameObject.Find("Note_" + position + "_" + partitionIn);
     }
 }
 
