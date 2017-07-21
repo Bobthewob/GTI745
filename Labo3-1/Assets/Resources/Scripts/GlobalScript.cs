@@ -22,14 +22,10 @@ public class GlobalScript : MonoBehaviour {
         if (Manager.Instance.selectedCube == null)
         {
             CubeNameInput.gameObject.SetActive(false);
-            EditMelodies.gameObject.SetActive(false);
-			DeleteStars.gameObject.SetActive(false);
         }
         else
         {
             CubeNameInput.gameObject.SetActive(true);
-            EditMelodies.gameObject.SetActive(true);
-			DeleteStars.gameObject.SetActive(true);
         }
 
 		switch (Manager.Instance.cursorType) {

@@ -243,7 +243,12 @@ public class MusicTest : MonoBehaviour {
                     ++currentNoteIndex;
                 }
                 break;
-        }    
+        }
+    }
+
+    public void UpdateNote(int position)
+    {
+        var note = GameObject.Find("Note_" + position + "_" + partitionIn);
     }
 }
 

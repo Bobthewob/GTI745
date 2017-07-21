@@ -77,4 +77,20 @@ public class UIEvent : MonoBehaviour {
 			button.image.color = new Color(0.65f, 0.65f, 0.65f);
 		}
 	}
+
+    public void onClickCloseModalHelp()
+    {
+        GameObject.Find("FirstCanvas").transform.Find("Help").gameObject.SetActive(false);
+    }
+
+    public void onClickOpenModalHelp()
+    {
+        GameObject.Find("FirstCanvas").transform.Find("Help").gameObject.SetActive(true);
+    }
+
+    public void onClickQuit()
+    {
+        Debug.Log("test");
+        Application.Quit();
+    }
 }
