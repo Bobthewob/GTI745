@@ -42,7 +42,9 @@ public class Event2DPartitionScript : MonoBehaviour {
 	public void onClickPlaySelectedButton(){
 		Debug.Log ("Press play selected");
 		MusicTest musicScript = GameObject.Find("MusicSource").GetComponent<MusicTest>();
-		if ((int)musicScript.PlaySong == -1)
+        musicScript.StopMusic();
+
+        if ((int)musicScript.PlaySong == -1)
 			musicScript.PlaySong = MusicTest.MusicPlayer.Melody2D;
     }
 
@@ -51,7 +53,9 @@ public class Event2DPartitionScript : MonoBehaviour {
         Debug.Log("Press play all");
         //Manager.Instance.playSong = true;
 		MusicTest musicScript = GameObject.Find("MusicSource").GetComponent<MusicTest>();
-		if ((int)musicScript.PlaySong == -1)
+        musicScript.StopMusic();
+
+        if ((int)musicScript.PlaySong == -1)
 			musicScript.PlaySong = MusicTest.MusicPlayer.Melodies2D;
     }
 

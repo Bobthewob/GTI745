@@ -18,13 +18,17 @@ public class EditScript : MonoBehaviour {
 
     public void OnMouseUp()
     {
-        Manager.Instance.selectedCube = this.transform.parent.transform.parent.gameObject.GetComponent<cubeScript>().cube;
-        Manager.Instance.transitionIn = true;
+        if (Manager.Instance.cursorType == cursorType.FreeView && !Manager.Instance.transitionIn) {
+            Manager.Instance.selectedCube = this.transform.parent.transform.parent.gameObject.GetComponent<cubeScript>().cube;
+            Manager.Instance.transitionIn = true;
+            GameObject.Find("MusicSource").GetComponent<MusicTest>().StopMusic();
+        }
     }
 
     public void OnMouseEnter()
     {
-        glow.EnableLight();
+        if (Manager.Instance.cursorType == cursorType.FreeView && !Manager.Instance.transitionIn)
+            glow.EnableLight();
     }
 
     public void OnMouseExit()

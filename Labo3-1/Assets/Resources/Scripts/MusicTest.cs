@@ -112,7 +112,7 @@ public class MusicTest : MonoBehaviour {
 			if (time > 0.25f) {
 				time = 0;
 
-				foreach (var melody in star) {
+				foreach (var melody in Manager.Instance.selectedCube) {
 					if (currentNoteIndex == 80) {
                         StopMusic();
                         break; // so we do not play the note at the index 0 of the other melodies
@@ -127,8 +127,8 @@ public class MusicTest : MonoBehaviour {
 							currentSource.clip = Resources.Load (note.ToString (), typeof(AudioClip)) as AudioClip;
 							currentSource.Play ();
 
-							if (sources.Count > star.children.Count) {
-								var oldSource = sources [sources.Count - (star.children.Count + 1)];
+							if (sources.Count > Manager.Instance.selectedCube.children.Count) {
+								var oldSource = sources [sources.Count - (Manager.Instance.selectedCube.children.Count + 1)];
 								oldSource.Stop ();
 							}
 						}

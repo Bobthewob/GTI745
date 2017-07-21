@@ -29,13 +29,17 @@ public class PlayScript : MonoBehaviour {
 
     public void OnMouseUp()
     {
-        MusicTest musicScript = GameObject.Find("MusicSource").GetComponent<MusicTest>();
-        musicScript.startMusicMelodies2D(this.transform.parent.transform.parent.gameObject.GetComponent<cubeScript>());
+        if (Manager.Instance.cursorType == cursorType.FreeView && !Manager.Instance.transitionIn)
+        {
+            MusicTest musicScript = GameObject.Find("MusicSource").GetComponent<MusicTest>();
+            musicScript.startMusicMelodies2D(this.transform.parent.transform.parent.gameObject.GetComponent<cubeScript>());
+        }
     }
 
     public void OnMouseEnter()
     {
-        glowPlay.EnableLight();
+        if (Manager.Instance.cursorType == cursorType.FreeView && !Manager.Instance.transitionIn)
+            glowPlay.EnableLight();
     }
 
     public void OnMouseExit()

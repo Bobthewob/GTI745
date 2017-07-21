@@ -17,7 +17,7 @@ public class DeleteScript : MonoBehaviour {
 
     public void OnMouseDown()
     {
-        if (Manager.Instance.cursorType == cursorType.FreeView)
+        if (Manager.Instance.cursorType == cursorType.FreeView && !Manager.Instance.transitionIn)
         {
             Manager.Instance.rootCubes.Remove(this.transform.parent.transform.parent.gameObject.GetComponent<cubeScript>().cube);
             Manager.Instance.selectedCube = null;
@@ -27,7 +27,8 @@ public class DeleteScript : MonoBehaviour {
 
     public void OnMouseEnter()
     {
-        glow.EnableLight();
+        if (Manager.Instance.cursorType == cursorType.FreeView && !Manager.Instance.transitionIn)
+            glow.EnableLight();
     }
 
     public void OnMouseExit()
