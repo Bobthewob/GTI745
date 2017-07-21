@@ -261,6 +261,9 @@ public class CameraZoom : MonoBehaviour
                             {
                                 c1Info.cube.children.Add(partition);
                             }
+
+                            // Update la lumiere
+                            c1Info.UpdateLight();
                             
                             Destroy(secondCubeMerge);
                             Manager.Instance.rootCubes.Remove(c2Info.cube);
@@ -297,7 +300,7 @@ public class CameraZoom : MonoBehaviour
                     {
                         if (firstCubeMerge != null)
                         {
-						firstCubeMerge.GetComponent<MeshRenderer> ().material = (Material)Resources.Load ("SunMaterial");
+						    firstCubeMerge.GetComponent<MeshRenderer> ().material = (Material)Resources.Load ("SunMaterial");
                             //firstCubeMerge.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
                             firstCubeMerge = null;
                         }
@@ -431,20 +434,28 @@ public class CameraZoom : MonoBehaviour
     public void cameraTransitionIn()
     {
         Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
-        Vector3 lTargetDir = Manager.Instance.selectedCube.star.transform.position - cam.transform.position;
-        speed += 0.01f;
 
-        //cam.transform.LookAt(Manager.Instance.selectedCube.position);
-        //cam.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(Manager.Instance.selectedCube.position), Time.deltaTime * 5);
-
-        cam.transform.rotation = Quaternion.RotateTowards(cam.transform.rotation, Quaternion.LookRotation(lTargetDir), Time.deltaTime * 30);
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 4, Time.deltaTime * (1 + speed));
-
-        if (cam.fieldOfView < 4.1)
+        if (Manager.Instance.selectedCube != null)
         {
-            speed = 0.01f;
-            Manager.Instance.transitionIn = false;
-            SceneManager.LoadSceneAsync("2DPartition", LoadSceneMode.Additive);
+            Vector3 lTargetDir = Manager.Instance.selectedCube.star.transform.position - cam.transform.position;
+            speed += 0.01f;
+
+            //cam.transform.LookAt(Manager.Instance.selectedCube.position);
+            //cam.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(Manager.Instance.selectedCube.position), Time.deltaTime * 5);
+
+            cam.transform.rotation = Quaternion.RotateTowards(cam.transform.rotation, Quaternion.LookRotation(lTargetDir), Time.deltaTime * 30);
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 4, Time.deltaTime * (1 + speed));
+
+            if (cam.fieldOfView < 4.1)
+            {
+                speed = 0.01f;
+                Manager.Instance.transitionIn = false;
+                SceneManager.LoadSceneAsync("2DPartition", LoadSceneMode.Additive);
+            }
+        }
+        else
+        {
+            cam.fieldOfView = 60;
         }
     }
 

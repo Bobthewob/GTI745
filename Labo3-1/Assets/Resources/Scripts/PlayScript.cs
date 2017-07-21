@@ -5,47 +5,46 @@ using UnityEngine;
 
 public class PlayScript : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+    private Light light;
+    private GlowScript glowPlay;
+
+    // Use this for initialization
+    void Start () {
+        glowPlay = this.transform.Find("Glow Play").GetComponent<GlowScript>();
+    }
 	
 	// Update is called once per frame
 	void Update () {
-        GameObject glow = this.transform.parent.transform.parent.transform.Find("Glow Yellow").gameObject;
+        GlowScript glow = this.transform.parent.transform.parent.transform.Find("Glow Yellow").GetComponent<GlowScript>();
 
         if (this.transform.parent.transform.parent.gameObject.GetComponent<cubeScript>().isPlaying)
         {
-            //Component halo = this.transform.parent.transform.parent.gameObject.GetComponent("Halo");
-            //halo.GetType().GetProperty("enabled").SetValue(halo, true, null);
-            glow.SetActive(true);
+            glow.EnableLight();
         }
         else
         {
-            //Component halo = this.transform.parent.transform.parent.gameObject.GetComponent("Halo");
-            //halo.GetType().GetProperty("enabled").SetValue(halo, false, null);
-            glow.SetActive(false);
+            glow.DisenableLight();
         }
     }
 
     public void OnMouseUp()
     {
-        //Manager.Instance.selectedCube = this.transform.parent.transform.parent.gameObject.GetComponent<cubeScript>().cube;
         MusicTest musicScript = GameObject.Find("MusicSource").GetComponent<MusicTest>();
-        //if ((int)musicScript.PlaySong == -1)
-        //musicScript.PlaySong = MusicTest.MusicPlayer.Melodies2D;
         musicScript.startMusicMelodies2D(this.transform.parent.transform.parent.gameObject.GetComponent<cubeScript>());
     }
 
     public void OnMouseEnter()
     {
-        Component halo = this.gameObject.GetComponent("Halo");
-        halo.GetType().GetProperty("enabled").SetValue(halo, true, null);
+        glowPlay.EnableLight();
     }
 
     public void OnMouseExit()
     {
-        Component halo = this.gameObject.GetComponent("Halo");
-        halo.GetType().GetProperty("enabled").SetValue(halo, false, null);
+        glowPlay.DisenableLight();
+    }
+
+    public void UpdateLight()
+    {
+        glowPlay.changeRange();
     }
 }

@@ -8,10 +8,16 @@ public class cubeScript : MonoBehaviour {
     public static int menuStatus = 0;
     public bool isPlaying = false;
 
+    private GlowScript red;
+    private GlowScript yellow;
+
     // Use this for initialization
     void Start () {
         cube = new CubeParent(Manager.Instance.getUniqueCubeName(), gameObject);
         Manager.Instance.rootCubes.Add(cube);
+
+        red = this.transform.Find("Glow Red").GetComponent<GlowScript>();
+        yellow = this.transform.Find("Glow Yellow").GetComponent<GlowScript>();
     }
 	
 	// Update is called once per frame
@@ -21,13 +27,25 @@ public class cubeScript : MonoBehaviour {
 
     public void OnMouseEnter()
     {
-        GameObject glow = this.transform.Find("Glow Red").gameObject;
-        glow.SetActive(true);
+        red.EnableLight();
     }
 
     public void OnMouseExit()
     {
-        GameObject glow = this.transform.Find("Glow Red").gameObject;
-        glow.SetActive(false);
+        red.DisenableLight();
+    }
+
+    public void UpdateLight()
+    {
+        GlowScript bluePlay = this.transform.Find("Options").transform.Find("Play").transform.Find("Glow Play").GetComponent<GlowScript>();
+        GlowScript blueDelete = this.transform.Find("Options").transform.Find("Delete").transform.Find("Glow Delete").GetComponent<GlowScript>();
+        GlowScript blueEdit = this.transform.Find("Options").transform.Find("Edit").transform.Find("Glow Edit").GetComponent<GlowScript>();
+
+        bluePlay.changeRange();
+        blueDelete.changeRange();
+        blueEdit.changeRange();
+
+        red.changeRange();
+        yellow.changeRange();
     }
 }

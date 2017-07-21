@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DeleteScript : MonoBehaviour {
+    
+    private GlowScript glow;
 
-    public Camera camera;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
+    // Use this for initialization
+    void Start () {
+        glow = this.transform.Find("Glow Delete").GetComponent<GlowScript>();
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -27,13 +27,16 @@ public class DeleteScript : MonoBehaviour {
 
     public void OnMouseEnter()
     {
-        Component halo = this.gameObject.GetComponent("Halo");
-        halo.GetType().GetProperty("enabled").SetValue(halo, true, null);
+        glow.EnableLight();
     }
 
     public void OnMouseExit()
     {
-        Component halo = this.gameObject.GetComponent("Halo");
-        halo.GetType().GetProperty("enabled").SetValue(halo, false, null);
+        glow.DisenableLight();
+    }
+
+    public void UpdateLight()
+    {
+        glow.changeRange();
     }
 }

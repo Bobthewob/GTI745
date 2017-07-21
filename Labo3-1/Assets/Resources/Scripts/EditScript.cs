@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class EditScript : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+    private GlowScript glow;
+
+    // Use this for initialization
+    void Start () {
+        glow = this.transform.Find("Glow Edit").GetComponent<GlowScript>();
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -22,13 +24,16 @@ public class EditScript : MonoBehaviour {
 
     public void OnMouseEnter()
     {
-        Component halo = this.gameObject.GetComponent("Halo");
-        halo.GetType().GetProperty("enabled").SetValue(halo, true, null);
+        glow.EnableLight();
     }
 
     public void OnMouseExit()
     {
-        Component halo = this.gameObject.GetComponent("Halo");
-        halo.GetType().GetProperty("enabled").SetValue(halo, false, null);
+        glow.DisenableLight();
+    }
+
+    public void UpdateLight()
+    {
+        glow.changeRange();
     }
 }
