@@ -468,6 +468,7 @@ public class CameraZoom : MonoBehaviour
         if (cam.fieldOfView > 59.9)
         {
             Manager.Instance.transitionIn = false;
+            Manager.Instance.transitionOut = false;
         }
     }
 }

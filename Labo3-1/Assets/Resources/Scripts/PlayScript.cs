@@ -15,7 +15,7 @@ public class PlayScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        GlowScript glow = this.transform.parent.transform.parent.transform.Find("Glow Yellow").GetComponent<GlowScript>();
+        /*GlowScript glow = this.transform.parent.transform.parent.transform.Find("Glow Yellow").GetComponent<GlowScript>();
 
         if (this.transform.parent.transform.parent.gameObject.GetComponent<cubeScript>().isPlaying)
         {
@@ -24,7 +24,7 @@ public class PlayScript : MonoBehaviour {
         else
         {
             glow.DisenableLight();
-        }
+        }*/
     }
 
     public void OnMouseUp()

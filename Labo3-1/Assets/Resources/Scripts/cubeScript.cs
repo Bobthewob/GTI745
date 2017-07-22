@@ -22,8 +22,26 @@ public class cubeScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-       
-	}
+        GlowScript glow = this.transform.Find("Glow Yellow").GetComponent<GlowScript>();
+
+        if (this.isPlaying)
+        {
+            glow.EnableLight();
+        }
+        else
+        {
+            MusicTest musicScript = GameObject.Find("MusicSource").GetComponent<MusicTest>();
+
+            if (musicScript.PlaySong == MusicTest.MusicPlayer.All3D)
+            {
+                glow.EnableLight();
+            }
+            else
+            {
+                glow.DisenableLight();
+            }
+        }
+    }
 
     public void OnMouseEnter()
     {

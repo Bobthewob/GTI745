@@ -38,7 +38,15 @@ public class UIEvent : MonoBehaviour {
 
         musicScript.startMusicAll3D();
 
-		/*if (Manager.Instance.cursorType == cursorType.Play)
+        var stars = GameObject.FindGameObjectsWithTag("Star");
+
+        foreach (GameObject star in stars)
+        {
+            GlowScript glow = star.transform.Find("Glow Yellow").GetComponent<GlowScript>();
+            glow.EnableLight();
+        }
+
+        /*if (Manager.Instance.cursorType == cursorType.Play)
 		{
 			Manager.Instance.cursorType = cursorType.FreeView;
 			button.image.color = new Color(1f, 1f, 1f);
@@ -48,7 +56,7 @@ public class UIEvent : MonoBehaviour {
 			Manager.Instance.cursorType = cursorType.Play;
 			button.image.color = new Color(0.65f, 0.65f, 0.65f);
 		}*/
-	}
+    }
 
     public void onClickEditCube()
     {

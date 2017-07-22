@@ -36,7 +36,6 @@ public class MusicTest : MonoBehaviour {
 
         this.star = star.cube;
         Manager.Instance.starPlaying = star;
-
         startMusic(MusicPlayer.Single3D);
     }
 
@@ -84,15 +83,15 @@ public class MusicTest : MonoBehaviour {
 					var currentSource = sources [sources.Count - 1];
 					int note = Manager.Instance.selectedCube.children [GameObject.Find ("Dropdown").GetComponent<Dropdown> ().value].partition [currentNoteIndex];
 
-					time = 0;
+                    time = 0;
 
 					if (note != 255) {
-						Debug.Log ("note played : " + note);
+						//Debug.Log ("note played : " + note);
 
 						currentSource.clip = Resources.Load (note.ToString (), typeof(AudioClip)) as AudioClip;
 						currentSource.Play ();
 
-						if (sources.Count >= 2) {
+                        if (sources.Count >= 2) {
 							var oldSource = sources [sources.Count - 2];
 							oldSource.Stop ();
 						}
@@ -244,11 +243,6 @@ public class MusicTest : MonoBehaviour {
                 }
                 break;
         }
-    }
-
-    public void UpdateNote(int position)
-    {
-        //var note = GameObject.Find("Note_" + position + "_" + partitionIn);
     }
 }
 
