@@ -21,6 +21,7 @@ public class EditScript : MonoBehaviour {
         if (Manager.Instance.cursorType == cursorType.FreeView && !Manager.Instance.transitionIn) {
             Manager.Instance.selectedCube = this.transform.parent.transform.parent.gameObject.GetComponent<cubeScript>().cube;
             Manager.Instance.transitionIn = true;
+            Manager.Instance.transitionOut = false;
             GameObject.Find("MusicSource").GetComponent<MusicTest>().StopMusic();
         }
     }
